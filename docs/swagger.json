@@ -1,0 +1,549 @@
+{
+    "swagger": "2.0",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/ca": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "Add new Certificate Authorities",
+                "operationId": "post_certificate_authority",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/post_certificate_authority"
+                        }
+                    }
+                ],
+                "tags": [
+                    "/ca"
+                ]
+            },
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/certificate_authorities_data"
+                        }
+                    }
+                },
+                "summary": "List all Certificate Authorities",
+                "operationId": "get_certificate_authority",
+                "tags": [
+                    "/ca"
+                ]
+            }
+        },
+        "/api/v1/ca/{ca_common_name}": {
+            "parameters": [
+                {
+                    "description": "Certificate Authority Common Name",
+                    "name": "ca_common_name",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/get_common_name_response"
+                        }
+                    }
+                },
+                "summary": "Get information of specific Certificate Authority",
+                "operationId": "get_certificate_authority_management",
+                "tags": [
+                    "/ca"
+                ]
+            },
+            "put": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/get_common_name_response"
+                        }
+                    }
+                },
+                "summary": "Add Signed Certificate for Intermediate Certificate Authority",
+                "operationId": "put_certificate_authority_management",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/certificate_intermediate_ca"
+                        }
+                    }
+                ],
+                "tags": [
+                    "/ca"
+                ]
+            }
+        },
+        "/api/v1/ca/{ca_common_name}/certificates": {
+            "parameters": [
+                {
+                    "name": "ca_common_name",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/post_ca_certificate"
+                        }
+                    }
+                },
+                "summary": "Issue new certificate",
+                "operationId": "post_certificate_authority_certificates",
+                "tags": [
+                    "/ca"
+                ]
+            },
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/get_certificates_response"
+                        }
+                    }
+                },
+                "summary": "Get Certificate Authority Certificates",
+                "operationId": "get_certificate_authority_certificates",
+                "tags": [
+                    "/ca"
+                ]
+            }
+        },
+        "/api/v1/ca/{ca_common_name}/certificates/{certificate_common_name}": {
+            "parameters": [
+                {
+                    "description": "Certificate Authority Common Name",
+                    "name": "ca_common_name",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                },
+                {
+                    "description": "Certificate Common Name",
+                    "name": "certificate_common_name",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/get_certificate_response"
+                        }
+                    }
+                },
+                "summary": "Get Certificate Authority of specific certificate information",
+                "operationId": "get_certificate_authority_certificate_management",
+                "tags": [
+                    "/ca"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "Revoke Certificate Authority of specific certificate",
+                "operationId": "delete_certificate_authority_certificate_management",
+                "tags": [
+                    "/ca"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "OwnCA REST API",
+        "version": "1.0.0",
+        "description": "OwnCA REST API"
+    },
+    "produces": [
+        "application/json"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "tags": [
+        {
+            "name": "/ca",
+            "description": "Certificate Authorities"
+        }
+    ],
+    "definitions": {
+        "post_certificate_authority": {
+            "required": [
+                "common_name"
+            ],
+            "properties": {
+                "common_name": {
+                    "type": "string",
+                    "description": "Certificate Authority Common Name",
+                    "example": "example.com"
+                },
+                "dns_names": {
+                    "type": "array",
+                    "description": "List of additional names",
+                    "example": [
+                        "www.example.com",
+                        "example.com",
+                        "example.nl"
+                    ],
+                    "items": {
+                        "type": "string",
+                        "description": "Aditional names",
+                        "example": "www.example.com"
+                    }
+                },
+                "intermediate": {
+                    "type": "boolean",
+                    "description": "Is it a intermediate Certificate Authority?",
+                    "default": false,
+                    "example": false
+                },
+                "oids": {
+                    "$ref": "#/definitions/oids"
+                },
+                "public_exponent": {
+                    "type": "integer",
+                    "description": "Public Exponent for the Key",
+                    "default": 65537,
+                    "example": 65537
+                },
+                "key_size": {
+                    "type": "integer",
+                    "description": "Key size",
+                    "default": 2048,
+                    "example": 2048
+                }
+            },
+            "type": "object"
+        },
+        "oids": {
+            "properties": {
+                "country_name": {
+                    "type": "string",
+                    "description": "Country Name",
+                    "example": "NL"
+                },
+                "locality_name": {
+                    "type": "string",
+                    "description": "Locality referece",
+                    "example": "Veldhoven"
+                },
+                "state_or_province": {
+                    "type": "string",
+                    "description": "State or Provice",
+                    "example": "Noord-Brabant"
+                },
+                "street_address": {
+                    "type": "string",
+                    "description": "Street Name",
+                    "example": "Straat"
+                },
+                "organization_name": {
+                    "type": "string",
+                    "description": "Organization name",
+                    "example": "Example Org"
+                },
+                "organization_unit_name": {
+                    "type": "string",
+                    "description": "Organization Unit Name",
+                    "example": "Unit Example"
+                },
+                "email_address": {
+                    "type": "string",
+                    "description": "State or Provice",
+                    "example": "certificates@example.com"
+                }
+            },
+            "type": "object"
+        },
+        "certificate_authorities_data": {
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/certificate_authorities"
+                },
+                "error": {
+                    "$ref": "#/definitions/error_model"
+                }
+            },
+            "type": "object"
+        },
+        "certificate_authorities": {
+            "required": [
+                "certificate_authorities"
+            ],
+            "properties": {
+                "certificate_authorities": {
+                    "type": "array",
+                    "description": "Certificate Authorities",
+                    "example": [
+                        "ca.example.com",
+                        "internal.example.com"
+                    ],
+                    "items": {
+                        "type": "string",
+                        "description": "Certificate Authority common name",
+                        "example": "ca.example.com"
+                    }
+                }
+            },
+            "type": "object"
+        },
+        "error_model": {
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "description": "error message",
+                    "example": "Permission Denied on OwnCA storage."
+                }
+            },
+            "type": "object"
+        },
+        "certificate_intermediate_ca": {
+            "required": [
+                "certificate"
+            ],
+            "properties": {
+                "certificate": {
+                    "type": "string",
+                    "description": "Certificate",
+                    "example": "-----BEGIN CERTIFICATE-----R8dXfXcn7qTeMMZE531OoEYgmkUEvlntuRPpSZU6gIy/+PoxS6P5(...)-----END CERTIFICATE-----"
+                }
+            },
+            "type": "object"
+        },
+        "get_common_name_response": {
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/ca_data"
+                },
+                "error": {
+                    "$ref": "#/definitions/error_model"
+                }
+            },
+            "type": "object"
+        },
+        "ca_data": {
+            "required": [
+                "common_name",
+                "intermediate_ca",
+                "private_key",
+                "public_key"
+            ],
+            "properties": {
+                "common_name": {
+                    "type": "string",
+                    "description": "Certificate Authority common name",
+                    "example": "ca.example.com"
+                },
+                "certificate": {
+                    "type": "string",
+                    "description": "Certificate",
+                    "example": "-----BEGIN CERTIFICATE-----R8dXfXcn7qTeMMZE531OoEYgmkUEvlntuRPpSZU6gIy/+PoxS6P5(...)-----END CERTIFICATE-----"
+                },
+                "intermediate_ca": {
+                    "type": "boolean",
+                    "description": "Is this a intermediate CA?",
+                    "example": false
+                },
+                "hash_name": {
+                    "type": "string",
+                    "description": "Hash name",
+                    "example": "4f135327"
+                },
+                "private_key": {
+                    "type": "string",
+                    "description": "Private key",
+                    "example": "-----BEGIN PRIVATE KEY-----+v/bnEp2n/QWTbu10Tzk2glhsj2GQxU9E5uZaZB1lrAEdn6nRhV3(...)-----END PRIVATE KEY-----"
+                },
+                "public_key": {
+                    "type": "string",
+                    "description": "Public key",
+                    "example": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC(...)"
+                },
+                "crl": {
+                    "type": "string",
+                    "description": "Certificate Revocation List",
+                    "example": "-----BEGIN X509 CRL-----A5MTExODM5WhcNMjIwMTEwMTExODM5WjAkMCICEQCLAOWnqE9LMp(...)-----END X509 CRL-----"
+                },
+                "csr": {
+                    "type": "string",
+                    "description": "Certificate Signing Request",
+                    "example": "-----BEGIN CERTIFICATE REQUEST-----q0fDSFPwUTAHjLUU4Nih635GsfRHMP96r8U25a1Z7hqHWBcsMOGZ(...)-----END CERTIFICATE REQUEST-----"
+                },
+                "issued_certificates": {
+                    "type": "array",
+                    "description": "List of issued certificates",
+                    "example": [
+                        "intranet.example.com",
+                        "mail.example.net"
+                    ],
+                    "items": {
+                        "type": "string",
+                        "description": "Certificate Common Name",
+                        "example": "www.example.com"
+                    }
+                }
+            },
+            "type": "object"
+        },
+        "post_ca_certificate": {
+            "required": [
+                "common_name"
+            ],
+            "properties": {
+                "common_name": {
+                    "type": "string",
+                    "description": "Certificate common name",
+                    "example": "www.example.com"
+                },
+                "maximum_days": {
+                    "type": "integer",
+                    "description": "Maximum days to expire",
+                    "default": 825,
+                    "example": 365,
+                    "maximum": 825
+                },
+                "dns_names": {
+                    "type": "array",
+                    "description": "List of additional names",
+                    "example": [
+                        "www.example.com",
+                        "example.com",
+                        "example.nl"
+                    ],
+                    "items": {
+                        "type": "string",
+                        "description": "Aditional names",
+                        "example": "www.example.com"
+                    }
+                },
+                "oids": {
+                    "$ref": "#/definitions/oids"
+                },
+                "public_exponent": {
+                    "type": "integer",
+                    "description": "Public Exponent for the Key",
+                    "default": 65537,
+                    "example": 65537
+                },
+                "key_size": {
+                    "type": "integer",
+                    "description": "Key size",
+                    "default": 2048,
+                    "example": 2048
+                }
+            },
+            "type": "object"
+        },
+        "get_certificates_response": {
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/ca_certs_data"
+                },
+                "error": {
+                    "$ref": "#/definitions/error_model"
+                }
+            },
+            "type": "object"
+        },
+        "ca_certs_data": {
+            "required": [
+                "certificates"
+            ],
+            "properties": {
+                "certificates": {
+                    "type": "array",
+                    "description": "List of issued certificates",
+                    "items": {
+                        "type": "string",
+                        "description": "Certificate Common Name",
+                        "example": "www.example.com"
+                    }
+                }
+            },
+            "type": "object"
+        },
+        "get_certificate_response": {
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/certificate_data"
+                },
+                "error": {
+                    "$ref": "#/definitions/error_model"
+                }
+            },
+            "type": "object"
+        },
+        "certificate_data": {
+            "required": [
+                "common_name",
+                "private_key",
+                "public_key"
+            ],
+            "properties": {
+                "common_name": {
+                    "type": "string",
+                    "description": "Certificate common name",
+                    "example": "www.example.com"
+                },
+                "certificate": {
+                    "type": "string",
+                    "description": "Certificate",
+                    "example": "-----BEGIN CERTIFICATE-----R8dXfXcn7qTeMMZE531OoEYgmkUEvlntuRPpSZU6gIy/+PoxS6P5(...)-----END CERTIFICATE-----"
+                },
+                "private_key": {
+                    "type": "string",
+                    "description": "Private key",
+                    "example": "-----BEGIN PRIVATE KEY-----+v/bnEp2n/QWTbu10Tzk2glhsj2GQxU9E5uZaZB1lrAEdn6nRhV3(...)-----END PRIVATE KEY-----"
+                },
+                "public_key": {
+                    "type": "string",
+                    "description": "Public key",
+                    "example": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC(...)"
+                },
+                "csr": {
+                    "type": "string",
+                    "description": "Certificate Signing Request",
+                    "example": "-----BEGIN CERTIFICATE REQUEST-----q0fDSFPwUTAHjLUU4Nih635GsfRHMP96r8U25a1Z7hqHWBcsMOGZ(...)-----END CERTIFICATE REQUEST-----"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "responses": {
+        "ParseError": {
+            "description": "When a mask can't be parsed"
+        },
+        "MaskError": {
+            "description": "When any error occurs on mask"
+        }
+    }
+}

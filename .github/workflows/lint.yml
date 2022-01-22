@@ -1,19 +1,25 @@
-name: CI
+name: Lint
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
   pull_request:
     branches: [ main ]
-
-  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-versions: [ "3.9", "3.10", ]
 
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-versions }}
 
-      - name: Run a one-line script
-        run: echo TBD
+    - name: Install tox and coverage
+      run: pip install tox tox-gh-actions
+
+    - name: Run Python tests
+      run: tox -e lint
