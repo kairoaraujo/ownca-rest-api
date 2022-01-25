@@ -206,7 +206,7 @@ class CertificateAuthorityCertificates(Resource):
     def get(self, ca_common_name):
         """Get Certificate Authority Certificates"""
 
-    post_ca_certificate = ns.model(
+    ca_certificate = ns.model(
         "post_ca_certificate",
         {
             "common_name": fields.String(
@@ -242,8 +242,16 @@ class CertificateAuthorityCertificates(Resource):
             ),
         },
     )
+    post_ca_certifica_response = ns.model(
+        "post_ca_certificate_response",
+        {
+            "data": fields.Nested(ca_certificate),
+            "error": fields.Nested(error_model),
+        },
+    )
 
-    @ns.response(200, "OK", post_ca_certificate)
+    @ns.response(200, "OK", post_ca_certifica_response)
+    @ns.doc(body=ca_certificate, validate=True)
     def post(self, ca_common_name):
         """Issue new certificate"""
 

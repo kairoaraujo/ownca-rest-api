@@ -51,21 +51,6 @@
                     "type": "string"
                 }
             ],
-            "get": {
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/get_common_name_response"
-                        }
-                    }
-                },
-                "summary": "Get information of specific Certificate Authority",
-                "operationId": "get_certificate_authority_management",
-                "tags": [
-                    "/ca"
-                ]
-            },
             "put": {
                 "responses": {
                     "200": {
@@ -90,6 +75,21 @@
                 "tags": [
                     "/ca"
                 ]
+            },
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/get_common_name_response"
+                        }
+                    }
+                },
+                "summary": "Get information of specific Certificate Authority",
+                "operationId": "get_certificate_authority_management",
+                "tags": [
+                    "/ca"
+                ]
             }
         },
         "/api/v1/ca/{ca_common_name}/certificates": {
@@ -106,12 +106,22 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/post_ca_certificate"
+                            "$ref": "#/definitions/post_ca_certificate_response"
                         }
                     }
                 },
                 "summary": "Issue new certificate",
                 "operationId": "post_certificate_authority_certificates",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/post_ca_certificate"
+                        }
+                    }
+                ],
                 "tags": [
                     "/ca"
                 ]
@@ -149,6 +159,18 @@
                     "type": "string"
                 }
             ],
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "Revoke Certificate Authority of specific certificate",
+                "operationId": "delete_certificate_authority_certificate_management",
+                "tags": [
+                    "/ca"
+                ]
+            },
             "get": {
                 "responses": {
                     "200": {
@@ -163,24 +185,12 @@
                 "tags": [
                     "/ca"
                 ]
-            },
-            "delete": {
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    }
-                },
-                "summary": "Revoke Certificate Authority of specific certificate",
-                "operationId": "delete_certificate_authority_certificate_management",
-                "tags": [
-                    "/ca"
-                ]
             }
         }
     },
     "info": {
         "title": "OwnCA REST API",
-        "version": "1.0.0",
+        "version": "0.0.1-dev",
         "description": "OwnCA REST API"
     },
     "produces": [
@@ -366,7 +376,7 @@
                 "certificate": {
                     "type": "string",
                     "description": "Certificate",
-                    "example": "-----BEGIN CERTIFICATE-----R8dXfXcn7qTeMMZE531OoEYgmkUEvlntuRPpSZU6gIy/+PoxS6P5(...)-----END CERTIFICATE-----"
+                    "example": "-----BEGIN CERTIFICATE-----RdXfXcn7qTeMMZE531OoEYgmkUEvlntuRPpSZU6g/+PoxS6P5(...)-----END CERTIFICATE-----"
                 },
                 "intermediate_ca": {
                     "type": "boolean",
@@ -381,7 +391,7 @@
                 "private_key": {
                     "type": "string",
                     "description": "Private key",
-                    "example": "-----BEGIN PRIVATE KEY-----+v/bnEp2n/QWTbu10Tzk2glhsj2GQxU9E5uZaZB1lrAEdn6nRhV3(...)-----END PRIVATE KEY-----"
+                    "example": "-----BEGIN PRIVATE KEY-----+v/bnEp2n/QWTbu10Tzk2glhsj2GQxU9E5uZaZrAEdn6nRhV3(...)-----END PRIVATE KEY-----"
                 },
                 "public_key": {
                     "type": "string",
@@ -463,6 +473,17 @@
             },
             "type": "object"
         },
+        "post_ca_certificate_response": {
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/post_ca_certificate"
+                },
+                "error": {
+                    "$ref": "#/definitions/error_model"
+                }
+            },
+            "type": "object"
+        },
         "get_certificates_response": {
             "properties": {
                 "data": {
@@ -517,12 +538,12 @@
                 "certificate": {
                     "type": "string",
                     "description": "Certificate",
-                    "example": "-----BEGIN CERTIFICATE-----R8dXfXcn7qTeMMZE531OoEYgmkUEvlntuRPpSZU6gIy/+PoxS6P5(...)-----END CERTIFICATE-----"
+                    "example": "-----BEGIN CERTIFICATE-----R8dXfXcn7qTeMMZE531OoEYgmkUEvtuRPpSZU6gIy/+PoxS6P5(...)-----END CERTIFICATE-----"
                 },
                 "private_key": {
                     "type": "string",
                     "description": "Private key",
-                    "example": "-----BEGIN PRIVATE KEY-----+v/bnEp2n/QWTbu10Tzk2glhsj2GQxU9E5uZaZB1lrAEdn6nRhV3(...)-----END PRIVATE KEY-----"
+                    "example": "-----BEGIN PRIVATE KEY-----+v/bnEp2n/QWTbu10Tzk2glhsj2GQxE5uZaZB1lrAEdn6nRhV3(...)-----END PRIVATE KEY-----"
                 },
                 "public_key": {
                     "type": "string",
