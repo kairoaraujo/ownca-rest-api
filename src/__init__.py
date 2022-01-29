@@ -1,3 +1,3 @@
 from flask import Flask
 
-app = Flask(__name__)
+ownca_api_app = Flask(__name__)

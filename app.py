@@ -1,11 +1,11 @@
 from flask_restx import Api
 
-from src import __version__, app
+from src import __version__, ownca_api_app
 from src.api.v1.ca import ns as ca_v1
 from src.api.v1.commom_models import api_models_namespace
 
 api = Api(
-    app,
+    ownca_api_app,
     version=__version__.version,
     title="OwnCA REST API",
     description="OwnCA REST API",

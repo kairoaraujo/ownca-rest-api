@@ -1,3 +1,4 @@
+from flask import jsonify
 from flask_restx import Namespace, Resource, fields
 
 from src.api.v1.commom_models import error_model, oids
@@ -33,6 +34,7 @@ class CertificateAuthority(Resource):
     @ns.response(200, "OK", certificate_authorities_response)
     def get(self):
         """List all Certificate Authorities"""
+
 
     post_certificate_authority = ns.model(
         "post_certificate_authority",
